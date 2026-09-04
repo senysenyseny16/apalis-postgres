@@ -124,7 +124,10 @@ impl Stream for PgPollFetcher<CompactType> {
                 }
                 StreamState::Delay => match this.poller.poll_next_unpin(cx) {
                     Poll::Pending => return Poll::Pending,
-                    Poll::Ready(_) => this.state = StreamState::Ready,
+                    Poll::Ready(_) => {
+                        eprintln!("poll tick {:?}", std::time::Instant::now());
+                        this.state = StreamState::Ready
+                    }
                 },
 
                 StreamState::Fetch(ref mut fut) => match fut.poll_unpin(cx) {
